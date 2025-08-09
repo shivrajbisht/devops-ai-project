@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: website-ingress
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: shivraj.example.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: website-backend
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: website-frontend
+                port:
+                  number: 80
+# tls:
+#   - hosts:
+#       - shivraj.example.com
+#     secretName: website-tls
