@@ -1,0 +1,38 @@
+image:
+  repository: your-registry/your-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# e.g. [{ name: regcred }]
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+migration:
+  enabled: true
+  command: npm run migrate
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 3600
+  waitForDatabase:
+    enabled: true
+    # postgres or mysql
+    type: postgres
+    image: postgres:16-alpine
+    hostSecret:
+      name: app-db
+      key: host
+    portSecret:
+      name: app-db
+      key: port
+
+# Environment variables for the migration container
+# Example assumes a single DATABASE_URL secret
+env:
+  - name: DATABASE_URL
+    valueFrom:
+      secretKeyRef:
+        name: app-db
+        key: url
+
+resources: {}

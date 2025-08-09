@@ -1,0 +1,59 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: app-migrate
+  namespace: default
+  labels:
+    app.kubernetes.io/name: app
+    app.kubernetes.io/component: migration
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: app
+        app.kubernetes.io/component: migration
+    spec:
+      restartPolicy: Never
+      initContainers:
+        - name: wait-for-db
+          image: postgres:16-alpine
+          command: ["sh", "-c"]
+          args:
+            - >
+              until pg_isready -h "$DATABASE_HOST" -p "$DATABASE_PORT"; do
+                echo "Waiting for Postgres...";
+                sleep 2;
+              done
+          env:
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: app-db
+                  key: host
+            - name: DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: app-db
+                  key: port
+      containers:
+        - name: migrate
+          image: your-registry/your-app:latest
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c"]
+          args:
+            - npm run migrate
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-db
+                  key: url
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
