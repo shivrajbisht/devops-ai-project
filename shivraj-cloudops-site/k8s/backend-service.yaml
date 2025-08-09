@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: website-backend
+  namespace: default
+  labels:
+    app: website-backend
+spec:
+  selector:
+    app: website-backend
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

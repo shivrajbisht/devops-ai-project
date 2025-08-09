@@ -1,0 +1,35 @@
+namespace: default
+
+ingress:
+  enabled: true
+  className: nginx
+  host: shivraj.example.com
+  tls:
+    enabled: false
+    secretName: website-tls
+
+backend:
+  image:
+    repository: your-registry/website-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicas: 2
+  resources: {}
+
+frontend:
+  image:
+    repository: your-registry/website-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicas: 2
+  resources: {}
+
+postgres:
+  enabled: true
+  image: postgres:16-alpine
+  storage:
+    size: 10Gi
+  auth:
+    database: website
+    username: app
+    password: app

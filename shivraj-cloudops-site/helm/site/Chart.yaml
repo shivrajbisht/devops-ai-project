@@ -1,0 +1,6 @@
+apiVersion: v2
+name: shivraj-cloudops-site
+description: Shivraj Singh Bisht CloudOps/DevOps website (frontend + backend + PostgreSQL)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

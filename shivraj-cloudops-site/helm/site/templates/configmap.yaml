@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: website-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: website
+data:
+  APP_NAME: "Shivraj CloudOps"
